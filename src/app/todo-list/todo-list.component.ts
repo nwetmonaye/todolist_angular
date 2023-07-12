@@ -1,49 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-
-interface Task {
-  name: string;
-  checked: boolean;
-}
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.css'],
 })
-export class TodoListComponent implements OnInit {
-  taskInput: any;
-  tasks: Task[] = [];
+export class TodoListComponent {
+  taskText: string;
+  tasks: { text: string; checked: boolean }[];
 
-  ngOnInit() {
-    const data = localStorage.getItem('data');
-    this.tasks = data ? JSON.parse(data) : [];
+  constructor() {
+    this.taskText = '';
+    this.tasks = [];
   }
 
+  toggleCheck(task: any) {
+    task.checked = !task.checked;
+    this.saveData();
+  }
   addTask() {
-    if (this.taskInput === '') {
+    if (this.taskText === '') {
       alert('You must write something!');
     } else {
-      const newTask: Task = { name: this.taskInput, checked: false };
-      this.tasks.push(newTask);
+      this.tasks.push({ text: this.taskText, checked: false });
       this.saveData();
     }
-    this.taskInput = '';
+    this.taskText = '';
   }
 
-  removeTask(task: Task) {
+  removeTask(task: any) {
     const index = this.tasks.indexOf(task);
-    if (index !== -1) {
+    if (index > -1) {
       this.tasks.splice(index, 1);
       this.saveData();
     }
   }
 
-  toggleTaskStatus(task: Task) {
-    task.checked = !task.checked;
-    this.saveData();
-  }
-
   saveData() {
     localStorage.setItem('data', JSON.stringify(this.tasks));
+  }
+
+  ngOnInit() {
+    this.showTasks();
+  }
+
+  showTasks() {
+    const data = localStorage.getItem('data');
+    if (data) {
+      this.tasks = JSON.parse(data).map((task: any) => {
+        return { text: task.text, checked: task.checked };
+      });
+    }
   }
 }

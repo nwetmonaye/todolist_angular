@@ -1,19 +1,18 @@
 <div class="container">
   <div class="todo-app">
-    <h2>To Do List <img src="images/icon.png" /></h2>
+    <h2>To Do List <img src="assets/images/icon.png" /></h2>
     <div class="row">
-      <input
-        type="text"
-        id="input-box"
-        placeholder="Add your test"
-        [(ngModel)]="taskInput"
-      />
+      <input type="text" [(ngModel)]="taskText" placeholder="Add your task" />
       <button (click)="addTask()">Add</button>
     </div>
     <ul>
-      <li *ngFor="let task of tasks" [class.checked]="task.checked">
-        {{ task.name }}
-        <span (click)="removeTask(task)">×</span>
+      <li
+        *ngFor="let task of tasks"
+        [class.checked]="task.checked"
+        (click)="toggleCheck(task)"
+      >
+        {{ task.text }}
+        <span (click)="removeTask(task)">&times;</span>
       </li>
     </ul>
   </div>
